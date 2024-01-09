@@ -91,15 +91,22 @@ class ZingController {
     });
   }
   async getSongV2(req, res) {
-    const { id, sig, ctime, version, apiKey } = req.query;
-    const response = await fetch(
-      `https://zingmp3.vn/api/v2/song/get/streaming?id=${id}&sig=${sig}&ctime=${ctime}&version=${version}&apiKey=${apiKey}`
-    );
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+    try {
+      const { id, sig, ctime, version, apiKey } = req.query;
+      const response = await fetch(
+        `https://zingmp3.vn/api/v2/song/get/streaming?id=${id}&sig=${sig}&ctime=${ctime}&version=${version}&apiKey=${apiKey}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      res.status(500).json({ error: "Error fetching data" });
     }
-    const data = await response.json();
-    res.json(data);
   }
 }
 
